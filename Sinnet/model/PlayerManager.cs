@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace Sinnet
 {
-    static class PlayerManager
+    public class PlayerManager
     {
-        public static List<Player> players = new List<Player>();
+        public List<Player> players;
 
-        public static void CalculateStats()
+        public PlayerManager()
+        {
+            players = new List<Player>();
+        }
+
+        public void CalculateStats()
         {
             //calculate OWP
             foreach (Player player in players)
@@ -20,7 +25,7 @@ namespace Sinnet
 
                 foreach (Match match in player.Matches)
                 {
-                    opponent = PlayerManager.GetPlayer(player.GetOpponent(match));
+                    opponent = GetPlayer(player.GetOpponent(match));
                     sum += opponent.WinningPercentage;
                 }
 
@@ -35,7 +40,7 @@ namespace Sinnet
 
                 foreach (Match match in player.Matches)
                 {
-                    opponent = PlayerManager.GetPlayer(player.GetOpponent(match));
+                    opponent = GetPlayer(player.GetOpponent(match));
                     sum += opponent.OWP;
                 }
 
@@ -56,7 +61,7 @@ namespace Sinnet
 
                 foreach (Match match in player.Matches)
                 {
-                    opponent = PlayerManager.GetPlayer(player.GetOpponent(match));
+                    opponent = GetPlayer(player.GetOpponent(match));
                     sum += opponent.RPI * match.GetPercentGamesWon(player.Name);
                 }
 
@@ -64,8 +69,42 @@ namespace Sinnet
             }
         }
 
-       
-        public static void AddPlayer(string name)
+        public List<Result> GetPlayerResults(Player player)
+        {
+            List<Result> results = new List<Result>();
+            Result result;
+
+            foreach (Match match in player.Matches)
+            {
+                result = new Result();
+                    
+                if(match.Winner.Equals(player.Name))
+                {
+                    result.Win = true;
+                    result.Opponent = match.Loser;
+
+                    Player opponent = GetPlayer(match.Loser);
+                    result.OpponentELO = opponent.ELO;
+                    result.OpponentDQ = opponent.DataQuality;
+                }
+                else
+                {
+                    result.Win = false;
+                    result.Opponent = match.Winner;
+
+                    Player opponent = GetPlayer(match.Winner);
+                    result.OpponentELO = opponent.ELO;
+                    result.OpponentDQ = opponent.DataQuality;
+                }
+
+                result.Score = match.Score;
+                results.Add(result);
+            }
+
+            return results;
+        }
+ 
+        public void AddPlayer(string name)
         {
             bool alreadyExists = false;
 
@@ -83,7 +122,7 @@ namespace Sinnet
             }
         }
 
-        public static void AssignMatchesToPlayers(List<Match> matches)
+        public void AssignMatchesToPlayers(List<Match> matches)
         {
             foreach (Player player in players)
             {
@@ -91,7 +130,7 @@ namespace Sinnet
             }
         }
 
-        public static Player GetPlayer(string name)
+        public Player GetPlayer(string name)
         {
             foreach (Player player in players)
             {
@@ -104,7 +143,7 @@ namespace Sinnet
             return null;
         }
 
-        public static void PrintPlayerList()
+        public void PrintPlayerList()
         {
             Console.WriteLine();
 
@@ -114,7 +153,7 @@ namespace Sinnet
             }
         }
 
-        public static void PrintPlayers(int numMatches)
+        public void PrintPlayers(int numMatches)
         {
             Console.WriteLine();
 
@@ -127,7 +166,7 @@ namespace Sinnet
             }
         }
 
-        public static void PrintRPIList()
+        public void PrintRPIList()
         {
             Console.WriteLine();
 
@@ -139,7 +178,7 @@ namespace Sinnet
             }
         }
 
-        public static void PrintSRList()
+        public void PrintSRList()
         {
             Console.WriteLine();
 
@@ -151,7 +190,7 @@ namespace Sinnet
             }
         }
 
-        public static string PrintRatingList()
+        public string PrintRatingList()
         {
             string ratingsList = "";
 
@@ -161,7 +200,6 @@ namespace Sinnet
             foreach (Player player in RatingList)
             {
                 if (player.NumMatches > 0)
-                //if(player.DataQuality > 5)
                 {
                     ratingsList += string.Format("{0:N3}", player.ELO) + "    " + player.Name + "\n";
                     Console.WriteLine(string.Format("{0:N3}", player.ELO) + "    " + i + "  " + player.Name);

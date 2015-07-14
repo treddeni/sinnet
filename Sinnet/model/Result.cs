@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sinnet
 {
-    class Result
+    public class Result
     {
         public bool Win { get; set; }
         public string Opponent { get; set; }

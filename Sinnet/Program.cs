@@ -4,11 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Sinnet.controller;
 
 namespace Sinnet
 {
     static class Program
     {
+        private const String dataFilePath = @"C:\projects\sinnet\data\results-open.csv";
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -17,7 +20,9 @@ namespace Sinnet
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            MainForm form = new MainForm();
+
+            MainController mainController = new MainController(dataFilePath);
+            MainForm form = new MainForm(mainController);
             Application.Run(form);
         }
     }

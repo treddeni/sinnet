@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sinnet
 {
-    class Match
+    public class Match
     {
         public Match(string winner, string loser, string[] scores)
         {
@@ -124,6 +124,27 @@ namespace Sinnet
                 }
 
                 return score;
+            }
+        }
+
+        public double MatchQuality
+        {
+            get
+            {
+                double percentGamesWon = GetPercentGamesWon(Winner);
+
+                if ((percentGamesWon > .65 && percentGamesWon < .75) || (percentGamesWon < .35 && percentGamesWon > .25))
+                {
+                    return 5;
+                }
+                else if (percentGamesWon <= .65 && percentGamesWon >= .35)
+                {
+                    return 10;
+                }
+                else
+                {
+                    return 2;
+                }
             }
         }
 

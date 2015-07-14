@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Sinnet
 {
-    class Player
+    public class Player
     {
         private List<Match> matches = new List<Match>();
         private int wins = 0;
         private int losses = 0;
         private int numMatches = 0;
-        private double owp = 0.0;   //opponents winning percentage
-        private double oowp = 0.0;  //opponents opponents winning percentage
+        private double owp = 0.0;   //opponent's winning percentage
+        private double oowp = 0.0;  //opponent's opponent's winning percentage
         private double rpi = 0.0;   //ratings percentage index
         private double sr = 0.0;    //strength rating
         private double elo = 0.0;
@@ -42,44 +42,6 @@ namespace Sinnet
         public double ELO { get { return elo; } set { elo = value; } }
         public double MatchQuality { get { return matchQuality; } set { matchQuality = value; } }
         public double DataQuality { get { return dataQuality; } set { dataQuality = value; } }
-
-        public List<Result> Results
-        {
-            get
-            {
-                List<Result> results = new List<Result>();
-                Result result;
-
-                foreach (Match match in matches)
-                {
-                    result = new Result();
-                    
-                    if(match.Winner.Equals(Name))
-                    {
-                        result.Win = true;
-                        result.Opponent = match.Loser;
-
-                        Player opponent = PlayerManager.GetPlayer(match.Loser);
-                        result.OpponentELO = opponent.ELO;
-                        result.OpponentDQ = opponent.DataQuality;
-                    }
-                    else
-                    {
-                        result.Win = false;
-                        result.Opponent = match.Winner;
-
-                        Player opponent = PlayerManager.GetPlayer(match.Winner);
-                        result.OpponentELO = opponent.ELO;
-                        result.OpponentDQ = opponent.DataQuality;
-                    }
-
-                    result.Score = match.Score;
-                    results.Add(result);
-                }
-
-                return results;
-            }
-        }
 
         public string Record
         {
@@ -137,23 +99,9 @@ namespace Sinnet
 
                 //calculate match quality
                 matchQuality = 0.0;
-                
                 foreach (Match match in matches)
                 {
-                    double percentGamesWon = match.GetPercentGamesWon(this.Name);
-
-                    if (percentGamesWon >= .75 || percentGamesWon <= .25)
-                    {
-                        matchQuality += 2;
-                    }
-                    else if((percentGamesWon > .65 && percentGamesWon < .75) || (percentGamesWon < .35 && percentGamesWon > .25))
-                    {
-                        matchQuality += 5;
-                    }
-                    else if(percentGamesWon <= .65 && percentGamesWon >= .35)
-                    {
-                        matchQuality += 10;
-                    }
+                    matchQuality += match.MatchQuality;
                 }
             }
         }
