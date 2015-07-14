@@ -30,8 +30,6 @@ namespace Sinnet
 
             Rater.CalculateELO(matches);
 
-            //PlayerManager.PrintRatingList();
-
             playersListBox.Sorted = true;
             playersListBox.DataSource = PlayerManager.players;
             playersListBox.DisplayMember = "Name";
